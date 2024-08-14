@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
-class CEWidgetExtension extends AbstractExtension {
+class BetterElementgroupsExtension extends AbstractExtension {
 	public function __construct(private ScopeMatcher $scopeMatcher, private RequestStack $requestStack, private ContaoFramework $framework) {
 	}
 

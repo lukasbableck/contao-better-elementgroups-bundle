@@ -19,7 +19,7 @@ class BetterElementgroupsExtension extends AbstractExtension {
 		];
 	}
 
-	public function renderWidget(ContentElementReference $element): string {
+	public function renderWidget($element): string {
 		if ($this->scopeMatcher->isFrontendRequest($this->requestStack->getCurrentRequest())) {
 			return $this->framework->getAdapter(Controller::class)->getContentElement($element);
 		}

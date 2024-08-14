@@ -1,0 +1,7 @@
+{% extends "@Contao/content_element/element_group.html.twig" %}
+
+{% block content %}
+	{% for fragment in nested_fragments %}
+		{{ fragment|ce_widget }}
+	{% endfor %}
+{% endblock %}

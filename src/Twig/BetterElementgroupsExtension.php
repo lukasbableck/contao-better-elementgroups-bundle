@@ -7,19 +7,19 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 class BetterElementgroupsExtension extends AbstractExtension {
 	public function __construct(private ScopeMatcher $scopeMatcher, private RequestStack $requestStack, private ContaoFramework $framework) {
 	}
 
-	public function getFilters(): array {
+	public function getFunctions(): array {
 		return [
-			new TwigFilter('ce_widget', [$this, 'renderWidget']),
+			new TwigFunction('ce_widget', [$this, 'renderWidget']),
 		];
 	}
 
-	public function renderWidget($element): string {
+	public function renderWidget(ContentElementReference $element): string {
 		if ($this->scopeMatcher->isFrontendRequest($this->requestStack->getCurrentRequest())) {
 			return $this->framework->getAdapter(Controller::class)->getContentElement($element);
 		}

@@ -2,6 +2,6 @@
 
 {% block content %}
 	{% for fragment in nested_fragments %}
-		{{ fragment|ce_widget }}
+		{{ ce_widget(fragment) }}
 	{% endfor %}
 {% endblock %}

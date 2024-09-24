@@ -4,3 +4,6 @@
 .as-grid .cte_preview .tl_content:first-of-type{
 	margin-top: 0;
 }
+.hover-div:hover:has(.hover-div:hover) {
+	background-color: transparent !important;
+}

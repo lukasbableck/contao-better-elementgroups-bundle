@@ -32,7 +32,6 @@ class ContentChildRecordListener {
 			$children = ContentModel::findBy($arrColumns, [$objModel->id, 'tl_content'], ['order' => 'sorting']);
 			if (is_iterable($children)) {
 				foreach ($children as $child) {
-					dump($child);
 					$buttons = $this->generateButtons($child->row(), 'tl_content');
 					$preview .= '
 					<div class="tl_content click2edit toggle_select">

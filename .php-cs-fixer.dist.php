@@ -41,6 +41,11 @@ return (new PhpCsFixer\Config())
 		'string_implicit_backslashes' => true,
 		'string_line_ending' => true,
 		'void_return' => true,
+		'yoda_style' => [
+			'equal' => false,
+			'identical' => false,
+			'less_and_greater' => false,
+		],
 	])
 	->setFinder($finder)
 	->setIndent("\t")

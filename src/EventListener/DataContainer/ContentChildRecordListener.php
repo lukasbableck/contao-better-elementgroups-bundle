@@ -1,5 +1,4 @@
 <?php
-
 namespace Lukasbableck\ContaoBetterElementgroupsBundle\EventListener\DataContainer;
 
 use Contao\Backend;
@@ -8,6 +7,7 @@ use Contao\CoreBundle\DataContainer\DataContainerOperation;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
+use Contao\CoreBundle\Security\DataContainer\CreateAction;
 use Contao\DataContainer;
 use Contao\Image;
 use Contao\Input;
@@ -74,6 +74,10 @@ class ContentChildRecordListener {
 	protected function generateButtons($arrRow, $strTable, $arrRootIds = [], $blnCircularReference = false, $arrChildRecordIds = null, $strPrevious = null, $strNext = null) {
 		if (!\is_array($GLOBALS['TL_DCA'][$strTable]['list']['operations'] ?? null)) {
 			return '';
+		}
+
+		if (Input::get('act') == 'select') {
+			return '<input type="checkbox" name="IDS[]" id="ids_'.$arrRow['id'].'" class="tl_tree_checkbox" value="'.$arrRow['id'].'">';
 		}
 
 		$return = '';
@@ -172,6 +176,41 @@ class ContentChildRecordListener {
 			} else {
 				$return .= '<a href="'.$href.'" title="'.StringUtil::specialchars($config['title']).'"'.($isPopup ? ' onclick="Backend.openModalIframe({\'title\':\''.StringUtil::specialchars(str_replace("'", "\\'", $config['label'])).'\',\'url\':this.href});return false"' : '').$config['attributes'].'>'.Image::getHtml($config['icon'], $config['label']).'</a> ';
 			}
+		}
+
+		$labelPasteNew = $GLOBALS['TL_LANG'][$strTable]['pastenew'] ?? $GLOBALS['TL_LANG']['DCA']['pastenew'];
+		$labelPasteAfter = $GLOBALS['TL_LANG'][$strTable]['pasteafter'] ?? $GLOBALS['TL_LANG']['DCA']['pasteafter'];
+		$imagePasteNew = Image::getHtml('new.svg', $labelPasteNew[0]);
+		$imagePasteAfter = Image::getHtml('pasteafter.svg', $labelPasteAfter[0]);
+
+		$objSession = System::getContainer()->get('request_stack')->getSession();
+		$security = System::getContainer()->get('security.helper');
+
+		$blnClipboard = false;
+		$arrClipboard = $objSession->get('CLIPBOARD');
+		$blnMultiboard = false;
+
+		if (!empty($arrClipboard[$strTable])) {
+			$blnClipboard = true;
+			$arrClipboard = $arrClipboard[$strTable];
+
+			if (\is_array($arrClipboard['id'] ?? null)) {
+				$blnMultiboard = true;
+			}
+		} else {
+			$arrClipboard = null;
+		}
+
+		if (!($GLOBALS['TL_DCA'][$strTable]['config']['closed'] ?? null) && !($GLOBALS['TL_DCA'][$strTable]['config']['notCreatable'] ?? null) && $security->isGranted(ContaoCorePermissions::DC_PREFIX.$strTable, new CreateAction($strTable, ['pid' => $arrRow['pid'], 'sorting' => $arrRow['sorting'] + 1, 'ptable' => $strTable]))) {
+			$return .= ' <a href="'.Backend::addToUrl('act=create&amp;mode=1&amp;pid='.$arrRow['id'].'&amp;ptable=tl_content&amp;id='.Input::get('id').(Input::get('nb') ? '&amp;nc=1' : '')).'" title="'.StringUtil::specialchars(\sprintf($labelPasteNew[1], $arrRow['id'])).'">'.$imagePasteNew.'</a>';
+		}
+
+		if (($blnClipboard && $arrClipboard['mode'] == 'cut' && $arrRow['id'] == $arrClipboard['id']) || ($blnMultiboard && $arrClipboard['mode'] == 'cutAll' && \in_array($arrRow['id'], $arrClipboard['id']))) {
+			$return .= ' '.Image::getHtml('pasteafter--disabled.svg');
+		} elseif ($blnMultiboard) {
+			$return .= ' <a href="'.Backend::addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$arrRow['id'].'&amp;ptable=tl_content').'" title="'.StringUtil::specialchars(\sprintf($labelPasteAfter[1], $arrRow['id'])).'" data-action="contao--scroll-offset#store">'.$imagePasteAfter.'</a>';
+		} elseif ($blnClipboard) {
+			$return .= ' <a href="'.Backend::addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$arrRow['id'].'&amp;id='.$arrClipboard['id'].'&amp;ptable=tl_content').'" title="'.StringUtil::specialchars(\sprintf($labelPasteAfter[1], $arrRow['id'])).'" data-action="contao--scroll-offset#store">'.$imagePasteAfter.'</a>';
 		}
 
 		return trim($return);

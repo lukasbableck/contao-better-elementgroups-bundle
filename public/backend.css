@@ -1,0 +1,6 @@
+.cte_preview .tl_content_right img{
+	padding: 0;
+}
+.as-grid .cte_preview .tl_content:first-of-type{
+	margin-top: 0;
+}

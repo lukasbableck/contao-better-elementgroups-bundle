@@ -28,6 +28,10 @@ class ContentChildRecordListener {
 			$objModel->setRow($row);
 
 			$preview = '<html>';
+			if($row["headline"]) {
+				$headline = StringUtil::deserialize($row["headline"]);
+				$preview .= '<h2>'.$headline["value"].'</h2>';
+			}
 			$arrColumns = ['tl_content.pid=? AND tl_content.ptable=?'];
 			$children = ContentModel::findBy($arrColumns, [$objModel->id, 'tl_content'], ['order' => 'sorting']);
 			if (is_iterable($children)) {
@@ -43,10 +47,6 @@ class ContentChildRecordListener {
 						</div>
 					</div>';
 				}
-			}
-
-			if ($preview == '') {
-				return $orig;
 			}
 
 			$preview .= '</html>';

@@ -28,9 +28,11 @@ class ContentChildRecordListener {
 			$objModel->setRow($row);
 
 			$preview = '<html>';
-			if($row["headline"]) {
-				$headline = StringUtil::deserialize($row["headline"]);
-				$preview .= '<h2>'.$headline["value"].'</h2>';
+			if ($row['headline']) {
+				$headline = StringUtil::deserialize($row['headline']);
+				if ($headline && $headline['value']) {
+					$preview .= '<h2>'.$headline['value'].'</h2>';
+				}
 			}
 			$arrColumns = ['tl_content.pid=? AND tl_content.ptable=?'];
 			$children = ContentModel::findBy($arrColumns, [$objModel->id, 'tl_content'], ['order' => 'sorting']);

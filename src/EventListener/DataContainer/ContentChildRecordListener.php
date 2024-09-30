@@ -27,7 +27,7 @@ class ContentChildRecordListener {
 			$objModel = new ContentModel();
 			$objModel->setRow($row);
 
-			$preview = '<html>';
+			$preview = '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 			if ($row['headline']) {
 				$headline = StringUtil::deserialize($row['headline']);
 				if ($headline && $headline['value']) {
@@ -54,6 +54,7 @@ class ContentChildRecordListener {
 			$preview .= '</html>';
 
 			$dom = new \DOMDocument();
+			libxml_use_internal_errors(true);
 			$dom->loadHTML('<html>'.$orig.'</html>', \LIBXML_HTML_NOIMPLIED | \LIBXML_HTML_NODEFDTD);
 			$xpath = new \DOMXPath($dom);
 			$node = $xpath->query('//div[@class="cte_preview"]')->item(0);

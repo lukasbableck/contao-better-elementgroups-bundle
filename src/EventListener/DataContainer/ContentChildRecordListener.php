@@ -185,6 +185,9 @@ class ContentChildRecordListener {
 		$imagePasteNew = Image::getHtml('new.svg', $labelPasteNew[0]);
 		$imagePasteAfter = Image::getHtml('pasteafter.svg', $labelPasteAfter[0]);
 
+		$labelPasteInto = $GLOBALS['TL_LANG'][$strTable]['pasteinto'] ?? $GLOBALS['TL_LANG']['DCA']['pasteinto'];
+		$imagePasteInto = Image::getHtml('pasteinto.svg', \sprintf($labelPasteInto[1], $arrRow['id']));
+
 		$objSession = System::getContainer()->get('request_stack')->getSession();
 		$security = System::getContainer()->get('security.helper');
 
@@ -207,12 +210,24 @@ class ContentChildRecordListener {
 			$return .= ' <a href="'.Backend::addToUrl('act=create&amp;mode=1&amp;pid='.$arrRow['id'].'&amp;ptable=tl_content&amp;id='.Input::get('id').(Input::get('nb') ? '&amp;nc=1' : '')).'" title="'.StringUtil::specialchars(\sprintf($labelPasteNew[1], $arrRow['id'])).'">'.$imagePasteNew.'</a>';
 		}
 
+		// paste after
 		if (($blnClipboard && $arrClipboard['mode'] == 'cut' && $arrRow['id'] == $arrClipboard['id']) || ($blnMultiboard && $arrClipboard['mode'] == 'cutAll' && \in_array($arrRow['id'], $arrClipboard['id']))) {
 			$return .= ' '.Image::getHtml('pasteafter--disabled.svg');
 		} elseif ($blnMultiboard) {
 			$return .= ' <a href="'.Backend::addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$arrRow['id'].'&amp;ptable=tl_content').'" title="'.StringUtil::specialchars(\sprintf($labelPasteAfter[1], $arrRow['id'])).'" data-action="contao--scroll-offset#store">'.$imagePasteAfter.'</a>';
 		} elseif ($blnClipboard) {
 			$return .= ' <a href="'.Backend::addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$arrRow['id'].'&amp;id='.$arrClipboard['id'].'&amp;ptable=tl_content').'" title="'.StringUtil::specialchars(\sprintf($labelPasteAfter[1], $arrRow['id'])).'" data-action="contao--scroll-offset#store">'.$imagePasteAfter.'</a>';
+		}
+
+		// paste into
+		if($arrRow['type'] == 'element_group') {
+			if (($blnClipboard && $arrClipboard['mode'] == 'cut' && $arrRow['id'] == $arrClipboard['id']) || ($blnMultiboard && $arrClipboard['mode'] == 'cutAll' && \in_array($arrRow['id'], $arrClipboard['id']))) {
+				$return .= ' '.Image::getHtml('pasteinto--disabled.svg');
+			} elseif ($blnMultiboard) {
+				$return .= ' <a href="'.Backend::addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$arrRow['id'].'&amp;ptable=tl_content').'" title="'.StringUtil::specialchars(\sprintf($labelPasteInto[1], $arrRow['id'])).'" data-action="contao--scroll-offset#store">'.$imagePasteInto.'</a>';
+			} elseif ($blnClipboard) {
+				$return .= ' <a href="'.Backend::addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$arrRow['id'].'&amp;id='.$arrClipboard['id'].'&amp;ptable=tl_content').'" title="'.StringUtil::specialchars(\sprintf($labelPasteInto[1], $arrRow['id'])).'" data-action="contao--scroll-offset#store">'.$imagePasteInto.'</a>';
+			}
 		}
 
 		return trim($return);

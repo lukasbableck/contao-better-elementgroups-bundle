@@ -220,7 +220,7 @@ class ContentChildRecordListener {
 		}
 
 		// paste into
-		if($arrRow['type'] == 'element_group') {
+		if ($arrRow['type'] == 'element_group') {
 			if (($blnClipboard && $arrClipboard['mode'] == 'cut' && $arrRow['id'] == $arrClipboard['id']) || ($blnMultiboard && $arrClipboard['mode'] == 'cutAll' && \in_array($arrRow['id'], $arrClipboard['id']))) {
 				$return .= ' '.Image::getHtml('pasteinto--disabled.svg');
 			} elseif ($blnMultiboard) {

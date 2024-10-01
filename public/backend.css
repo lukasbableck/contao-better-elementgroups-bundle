@@ -7,3 +7,6 @@
 .hover-div:hover:has(.hover-div:hover) {
 	background-color: transparent !important;
 }
+.limit_toggler{
+	z-index: 2;
+}

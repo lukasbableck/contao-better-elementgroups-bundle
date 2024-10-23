@@ -37,8 +37,10 @@ class ContentChildRecordListener {
 			$arrColumns = ['tl_content.pid=? AND tl_content.ptable=?'];
 			$children = ContentModel::findBy($arrColumns, [$objModel->id, 'tl_content'], ['order' => 'sorting']);
 			if (is_iterable($children)) {
+				$dataContainer = DataContainer::getDriverForTable('tl_content');
+				$dc = (new \ReflectionClass($dataContainer))->newInstanceWithoutConstructor();
 				foreach ($children as $child) {
-					$buttons = $this->generateButtons($child->row(), 'tl_content');
+					$buttons = $this->generateButtons($child->row(), 'tl_content', $dc);
 					$preview .= '
 					<div class="tl_content click2edit toggle_select">
 						<div class="inside hover-div">
@@ -74,7 +76,7 @@ class ContentChildRecordListener {
 		return $orig;
 	}
 
-	protected function generateButtons($arrRow, $strTable, $arrRootIds = [], $blnCircularReference = false, $arrChildRecordIds = null, $strPrevious = null, $strNext = null) {
+	protected function generateButtons($arrRow, $strTable, $dc, $arrRootIds = [], $blnCircularReference = false, $arrChildRecordIds = null, $strPrevious = null, $strNext = null) {
 		if (!\is_array($GLOBALS['TL_DCA'][$strTable]['list']['operations'] ?? null)) {
 			return '';
 		}
@@ -88,8 +90,6 @@ class ContentChildRecordListener {
 		foreach ($GLOBALS['TL_DCA'][$strTable]['list']['operations'] as $k => $v) {
 			$v = \is_array($v) ? $v : [$v];
 
-			$dataContainer = DataContainer::getDriverForTable($strTable);
-			$dc = (new \ReflectionClass($dataContainer))->newInstanceWithoutConstructor();
 			$config = new DataContainerOperation($k, $v, $arrRow, $dc);
 
 			// Call a custom function instead of using the default button
@@ -207,6 +207,17 @@ class ContentChildRecordListener {
 			$arrClipboard = null;
 		}
 
+		// paste into
+		if ($arrRow['type'] == 'element_group') {
+			if (($blnClipboard && $arrClipboard['mode'] == 'cut' && $arrRow['id'] == $arrClipboard['id']) || ($blnMultiboard && $arrClipboard['mode'] == 'cutAll' && \in_array($arrRow['id'], $arrClipboard['id']))) {
+				$return .= ' '.Image::getHtml('pasteinto--disabled.svg');
+			} elseif ($blnMultiboard) {
+				$return .= ' <a href="'.Backend::addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$arrRow['id'].'&amp;ptable=tl_content').'" title="'.StringUtil::specialchars(\sprintf($labelPasteInto[1], $arrRow['id'])).'" data-action="contao--scroll-offset#store">'.$imagePasteInto.'</a>';
+			} elseif ($blnClipboard) {
+				$return .= ' <a href="'.Backend::addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$arrRow['id'].'&amp;id='.$arrClipboard['id'].'&amp;ptable=tl_content').'" title="'.StringUtil::specialchars(\sprintf($labelPasteInto[1], $arrRow['id'])).'" data-action="contao--scroll-offset#store">'.$imagePasteInto.'</a>';
+			}
+		}
+
 		if (!($GLOBALS['TL_DCA'][$strTable]['config']['closed'] ?? null) && !($GLOBALS['TL_DCA'][$strTable]['config']['notCreatable'] ?? null) && $security->isGranted(ContaoCorePermissions::DC_PREFIX.$strTable, new CreateAction($strTable, ['pid' => $arrRow['pid'], 'sorting' => $arrRow['sorting'] + 1, 'ptable' => $strTable]))) {
 			$return .= ' <a href="'.Backend::addToUrl('act=create&amp;mode=1&amp;pid='.$arrRow['id'].'&amp;ptable=tl_content&amp;id='.Input::get('id').(Input::get('nb') ? '&amp;nc=1' : '')).'" title="'.StringUtil::specialchars(\sprintf($labelPasteNew[1], $arrRow['id'])).'">'.$imagePasteNew.'</a>';
 		}
@@ -218,17 +229,6 @@ class ContentChildRecordListener {
 			$return .= ' <a href="'.Backend::addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$arrRow['id'].'&amp;ptable=tl_content').'" title="'.StringUtil::specialchars(\sprintf($labelPasteAfter[1], $arrRow['id'])).'" data-action="contao--scroll-offset#store">'.$imagePasteAfter.'</a>';
 		} elseif ($blnClipboard) {
 			$return .= ' <a href="'.Backend::addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$arrRow['id'].'&amp;id='.$arrClipboard['id'].'&amp;ptable=tl_content').'" title="'.StringUtil::specialchars(\sprintf($labelPasteAfter[1], $arrRow['id'])).'" data-action="contao--scroll-offset#store">'.$imagePasteAfter.'</a>';
-		}
-
-		// paste into
-		if ($arrRow['type'] == 'element_group') {
-			if (($blnClipboard && $arrClipboard['mode'] == 'cut' && $arrRow['id'] == $arrClipboard['id']) || ($blnMultiboard && $arrClipboard['mode'] == 'cutAll' && \in_array($arrRow['id'], $arrClipboard['id']))) {
-				$return .= ' '.Image::getHtml('pasteinto--disabled.svg');
-			} elseif ($blnMultiboard) {
-				$return .= ' <a href="'.Backend::addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$arrRow['id'].'&amp;ptable=tl_content').'" title="'.StringUtil::specialchars(\sprintf($labelPasteInto[1], $arrRow['id'])).'" data-action="contao--scroll-offset#store">'.$imagePasteInto.'</a>';
-			} elseif ($blnClipboard) {
-				$return .= ' <a href="'.Backend::addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$arrRow['id'].'&amp;id='.$arrClipboard['id'].'&amp;ptable=tl_content').'" title="'.StringUtil::specialchars(\sprintf($labelPasteInto[1], $arrRow['id'])).'" data-action="contao--scroll-offset#store">'.$imagePasteInto.'</a>';
-			}
 		}
 
 		return trim($return);

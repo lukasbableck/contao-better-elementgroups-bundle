@@ -133,7 +133,7 @@ class ContentChildRecordListener {
 
 				$href = System::getContainer()->get('router')->generate($config['route'], $params);
 			} elseif (isset($config['href'])) {
-				$href = Backend::addToUrl($config['href'].'&amp;id='.$arrRow['id'].(Input::get('nb') ? '&amp;nc=1' : '').($isPopup ? '&amp;popup=1' : ''));
+				$href = Backend::addToUrl($config['href'].'&amp;ptable=tl_content&amp;id='.$arrRow['id'].(Input::get('nb') ? '&amp;nc=1' : '').($isPopup ? '&amp;popup=1' : ''));
 			}
 
 			parse_str(StringUtil::decodeEntities($config['href'] ?? $v['href'] ?? ''), $params);

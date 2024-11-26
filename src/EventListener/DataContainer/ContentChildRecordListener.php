@@ -2,6 +2,7 @@
 namespace Lukasbableck\ContaoBetterElementgroupsBundle\EventListener\DataContainer;
 
 use Contao\Backend;
+use Contao\BackendUser;
 use Contao\ContentModel;
 use Contao\CoreBundle\DataContainer\DataContainerOperation;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
@@ -22,6 +23,7 @@ class ContentChildRecordListener {
 
 	public function __invoke(array $row): string {
 		$orig = $this->framework->getAdapter(System::class)->importStatic('tl_content')->{'addCteType'}($row);
+		$limitHeight = BackendUser::getInstance()->doNotCollapse ? false : (int) ($GLOBALS['TL_DCA']['tl_content']['list']['sorting']['limitHeight'] ?? 0);
 
 		if ($row['type'] == 'element_group') {
 			$objModel = new ContentModel();
@@ -43,7 +45,7 @@ class ContentChildRecordListener {
 					$buttons = $this->generateButtons($child->row(), 'tl_content', $dc);
 					$preview .= '
 					<div class="tl_content click2edit toggle_select">
-						<div class="inside hover-div">
+						<div class="inside hover-div"'.($limitHeight ? ' data-contao--limit-height-target="node"' : '').'>
 							<div class="tl_content_right">
 								'.$buttons.'
 							</div>
@@ -69,7 +71,7 @@ class ContentChildRecordListener {
 
 			$node->appendChild($dom->importNode($domPreview->documentElement, true));
 			$orig = $dom->saveHTML();
-			$orig = str_replace(['<html>', '</html>', '<body>', '</body>'], '', $orig);
+			$orig = str_replace(['<html>', '</html>', '<body>', '</body>', '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'], '', $orig);
 			$GLOBALS['TL_CSS'][] = 'bundles/contaobetterelementgroups/backend.css';
 		}
 

@@ -73,7 +73,11 @@ class ContentChildRecordListener {
 			$orig = $dom->saveHTML();
 			$orig = str_replace(['<html>', '</html>', '<body>', '</body>', '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'], '', $orig);
 			$GLOBALS['TL_CSS'][] = 'bundles/contaobetterelementgroups/backend.css';
-			$GLOBALS['TL_JAVASCRIPT'][] = 'bundles/contaobetterelementgroups/backend.js';
+			$orig .= '<script>
+				document.querySelectorAll("[data-disable-parent-limit-height]").forEach(el => {
+					el.closest(".inside").removeAttribute("data-contao--limit-height-target");
+				});
+			</script>';
 		}
 
 		return $orig;

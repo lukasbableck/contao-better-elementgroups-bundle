@@ -45,7 +45,7 @@ class ContentChildRecordListener {
 					$buttons = $this->generateButtons($child->row(), 'tl_content', $dc);
 					$preview .= '
 					<div class="tl_content click2edit toggle_select">
-						<div class="inside hover-div"'.($limitHeight ? ' data-contao--limit-height-target="node"' : '').'>
+						<div class="inside hover-div"'.($limitHeight && $child->type != 'element_group' ? ' data-contao--limit-height-target="node"' : '').'>
 							<div class="tl_content_right">
 								'.$buttons.'
 							</div>

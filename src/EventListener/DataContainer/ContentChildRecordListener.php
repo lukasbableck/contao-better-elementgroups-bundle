@@ -44,7 +44,7 @@ class ContentChildRecordListener {
 				foreach ($children as $child) {
 					$buttons = $this->generateButtons($child->row(), 'tl_content', $dc);
 					$preview .= '
-					<div class="tl_content click2edit toggle_select">
+					<div class="tl_content click2edit toggle_select" data-disable-parent-limit-height>
 						<div class="inside hover-div"'.($limitHeight && $child->type != 'element_group' ? ' data-contao--limit-height-target="node"' : '').'>
 							<div class="tl_content_right">
 								'.$buttons.'
@@ -73,6 +73,7 @@ class ContentChildRecordListener {
 			$orig = $dom->saveHTML();
 			$orig = str_replace(['<html>', '</html>', '<body>', '</body>', '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'], '', $orig);
 			$GLOBALS['TL_CSS'][] = 'bundles/contaobetterelementgroups/backend.css';
+			$GLOBALS['TL_JAVASCRIPT'][] = 'bundles/contaobetterelementgroups/backend.js';
 		}
 
 		return $orig;

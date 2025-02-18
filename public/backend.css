@@ -10,3 +10,6 @@
 .limit_toggler{
 	z-index: 2;
 }
+.tl_content_right:has(.operations-menu.show){
+	z-index: 3
+}

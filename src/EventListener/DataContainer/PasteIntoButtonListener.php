@@ -13,7 +13,7 @@ class PasteIntoButtonListener {
 	public function __invoke(array $row, ?string $href, string $label, string $title, ?string $icon, string $attributes, string $table, array $rootRecordIds, ?array $childRecordIds, bool $circularReference, ?string $previous, ?string $next, DataContainer $dc): string {
 		$return = '';
 
-		if ($row['type'] === 'element_group') {
+		if ($row['type'] === 'element_group' || $row['type'] === 'tabs') {
 			$strTable = $dc->table;
 			$objSession = System::getContainer()->get('request_stack')->getSession();
 

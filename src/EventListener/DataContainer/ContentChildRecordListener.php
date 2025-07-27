@@ -25,7 +25,7 @@ class ContentChildRecordListener {
 		$orig = $this->framework->getAdapter(System::class)->importStatic('tl_content')->{'addCteType'}($row);
 		$limitHeight = BackendUser::getInstance()->doNotCollapse ? false : (int) ($GLOBALS['TL_DCA']['tl_content']['list']['sorting']['limitHeight'] ?? 0);
 
-		if ($row['type'] == 'element_group') {
+		if ($row['type'] == 'element_group' || $row['type'] == 'tabs') {
 			$objModel = new ContentModel();
 			$objModel->setRow($row);
 
@@ -45,7 +45,7 @@ class ContentChildRecordListener {
 					$buttons = $this->generateButtons($child->row(), 'tl_content', $dc);
 					$preview .= '
 					<div class="tl_content click2edit toggle_select" data-disable-parent-limit-height>
-						<div class="inside hover-div"'.($limitHeight && $child->type != 'element_group' ? ' data-contao--limit-height-target="node"' : '').'>
+						<div class="inside hover-div"'.($limitHeight && $child->type != 'element_group' && $child->type != 'tabs' ? ' data-contao--limit-height-target="node"' : '').'>
 							<div class="tl_content_right">
 								'.$buttons.'
 							</div>
@@ -215,7 +215,7 @@ class ContentChildRecordListener {
 		}
 
 		// paste into
-		if ($arrRow['type'] == 'element_group') {
+		if ($arrRow['type'] == 'element_group' || $arrRow['type'] == 'tabs') {
 			if (($blnClipboard && $arrClipboard['mode'] == 'cut' && $arrRow['id'] == $arrClipboard['id']) || ($blnMultiboard && $arrClipboard['mode'] == 'cutAll' && \in_array($arrRow['id'], $arrClipboard['id']))) {
 				$return .= ' '.Image::getHtml('pasteinto--disabled.svg');
 			} elseif ($blnMultiboard) {

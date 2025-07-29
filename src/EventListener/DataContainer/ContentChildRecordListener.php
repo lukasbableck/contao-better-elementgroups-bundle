@@ -61,10 +61,14 @@ class ContentChildRecordListener {
 			libxml_use_internal_errors(true);
 			$dom->loadHTML('<html>'.$orig.'</html>', \LIBXML_HTML_NOIMPLIED | \LIBXML_HTML_NODEFDTD);
 			$xpath = new \DOMXPath($dom);
-			$node = $xpath->query('//div[@class="cte_preview"]')->item(0);
+			/** @var DOMElement $node */
+			$node = $xpath->query('//div[contains(@class, "cte_preview")]')->item(0);
 
 			$domPreview = new \DOMDocument();
 			$domPreview->loadHTML($preview, \LIBXML_HTML_NOIMPLIED | \LIBXML_HTML_NODEFDTD);
+			if (str_contains($node->className, 'empty')) {
+				$node->className = str_replace('empty', '', $node->className);
+			}
 			while ($node->hasChildNodes()) {
 				$node->removeChild($node->firstChild);
 			}

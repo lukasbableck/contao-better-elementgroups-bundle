@@ -66,7 +66,7 @@ class ContentChildRecordListener {
 
 			$domPreview = new \DOMDocument();
 			$domPreview->loadHTML($preview, \LIBXML_HTML_NOIMPLIED | \LIBXML_HTML_NODEFDTD);
-			if (str_contains($node->className, 'empty')) {
+			if (isset($node->className) && str_contains($node->className, 'empty')) {
 				$node->className = str_replace('empty', '', $node->className);
 			}
 			while ($node->hasChildNodes()) {

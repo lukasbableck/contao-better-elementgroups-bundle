@@ -63,7 +63,10 @@ class ContentChildRecordListener {
 			$xpath = new \DOMXPath($dom);
 			/** @var DOMElement $node */
 			$node = $xpath->query('//div[contains(@class, "cte_preview")]')->item(0);
-
+			if(!$node) {
+				return $orig;
+			}
+			
 			$domPreview = new \DOMDocument();
 			$domPreview->loadHTML($preview, \LIBXML_HTML_NOIMPLIED | \LIBXML_HTML_NODEFDTD);
 			if (str_contains($node->getAttribute('class'), 'empty')) {

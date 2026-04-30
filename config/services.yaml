@@ -5,3 +5,5 @@ services:
         public: false
     Lukasbableck\ContaoBetterElementgroupsBundle\:
         resource: ../src
+    Lukasbableck\ContaoBetterElementgroupsBundle\EventListener\DataContainer\ChildElementContainerPreviewListener:
+        decorates: contao.listener.data_container.content_element_view

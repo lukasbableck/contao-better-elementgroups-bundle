@@ -13,3 +13,54 @@
 .tl_content_right:has(.operations-menu.show){
 	z-index: 3
 }
+.tl_content:has(ul.child-records){
+	.limit_toggler{
+		display: none;
+	}
+	.cte_content{
+		max-height: initial !important;
+		overflow: initial !important;
+		.cte_preview{
+			contain: initial !important;
+		}
+	}
+}
+
+ul.child-records{
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+	list-style: none;
+	margin: 0;
+	padding: 8px 4px 12px;
+	.operations {
+		ul{
+			margin-block-end: 0;
+		}
+		button{
+			border: none;
+			background: transparent;
+		}
+		a{
+			color: var(--text);
+			&:hover{
+				color: var(--contao);
+			}
+		}
+		button, a{
+			img{
+				margin: 0;
+			}
+		}
+	}
+	li{
+		.tl_content{
+			&.wrapper_start{
+				margin-block-end: -14px;
+			}
+			&.indent{
+				margin-block: -14px;
+			}
+		}
+	}
+}

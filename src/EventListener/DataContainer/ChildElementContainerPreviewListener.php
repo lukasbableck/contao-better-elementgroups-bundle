@@ -41,13 +41,13 @@ class ChildElementContainerPreviewListener extends ContentElementViewListener {
 		$label = $this->inner->generateLabel($row, $label, $dc);
 
 		if ($dc->parentTable !== 'tl_theme') {
-			$childRecords = $this->generateRecords(ContentModel::findByPid($row['id'], ['order' => 'sorting ASC'])?->fetchAll() ?? [], $dc);
+			$childRecords = ContentModel::findBy(['pid = ?', 'ptable = ?'], [$row['id'], 'tl_content'], ['order' => 'sorting ASC'])?->fetchAll() ?? [];
 			if (\count($childRecords) === 0) {
 				return $label;
 			}
 
 			$label[1] = $this->twig->render('@Contao/backend/data_container/table/view/nested_grid_records.html.twig', [
-				'records' => $childRecords,
+				'records' => $this->generateRecords($childRecords, $dc),
 				'table' => $dc->table,
 				'is_sortable' => false,
 				'pid' => $row['id'],

@@ -24,7 +24,7 @@ class DecoratedDataContainerOperationsBuilder extends DataContainerOperationsBui
 
 	public function initializeWithButtons(string $table, array $record, DataContainer $dataContainer, ?callable $legacyCallback = null): DataContainerOperationsBuilder {
 		$builder = parent::initializeWithButtons($table, $record, $dataContainer, $legacyCallback);
-        if($record['ptable'] !== 'tl_content') {
+        if(($record['ptable'] ?? '') !== 'tl_content') {
             return $builder;
         }
 		foreach ($builder->operations as $operation) {

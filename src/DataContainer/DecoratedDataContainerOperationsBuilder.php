@@ -17,7 +17,6 @@ class DecoratedDataContainerOperationsBuilder extends DataContainerOperationsBui
 		private readonly Environment $twig,
 		private readonly Security $security,
 		private readonly UrlGeneratorInterface $urlGenerator,
-		private readonly DataContainerOperationsBuilder $inner
 	) {
 		parent::__construct($framework, $twig, $security, $urlGenerator);
 	}

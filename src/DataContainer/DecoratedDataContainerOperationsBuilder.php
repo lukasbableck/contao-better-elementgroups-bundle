@@ -31,7 +31,7 @@ class DecoratedDataContainerOperationsBuilder extends DataContainerOperationsBui
 				continue;
 			}
 
-			$operation['attributes']['onclick'] = "Backend.openModalIframe({title:'".str_replace("'", "\\'", \sprintf($operation['label'][1] ?? '%s', $record['id']))."', url:this.href+'&popup=1&nb=1'});return false";
+			$operation['attributes']['onclick'] = "Backend.openModalIframe({title:'".str_replace("'", "\\'", $operation['title'])."', url:this.href+'&popup=1&nb=1'});return false";
 		}
 
 		return $builder;

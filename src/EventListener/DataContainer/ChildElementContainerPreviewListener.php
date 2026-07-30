@@ -51,7 +51,7 @@ class ChildElementContainerPreviewListener extends ContentElementViewListener {
 				'table' => $dc->table,
 				'is_sortable' => false,
 				'pid' => $row['id'],
-				'as_select' => false,
+				'as_select' => Input::get('act') === 'select',
 				'as_picker' => false,
 				'display_grid' => true,
 			]);
@@ -147,6 +147,7 @@ class ChildElementContainerPreviewListener extends ContentElementViewListener {
 
 			$label = $dataContainer->generateRecordLabel($row);
 
+			$record['operations'] ??= '';
 			$record['label'] = \is_array($label) ? ($label[0] ?? '') : $label;
 			$record['preview'] = \is_array($label) ? trim($label[1] ?? '') : '';
 			$record['state'] = \is_array($label) ? ($label[2] ?? '') : '';

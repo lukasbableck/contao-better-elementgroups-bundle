@@ -7,6 +7,7 @@ use Contao\CoreBundle\DataContainer\ClipboardManager;
 use Contao\CoreBundle\DataContainer\DataContainerGlobalOperationsBuilder;
 use Contao\CoreBundle\DataContainer\DataContainerOperation;
 use Contao\CoreBundle\DataContainer\DataContainerOperationsBuilder;
+use Contao\CoreBundle\DataContainer\RecordLabel;
 use Contao\CoreBundle\EventListener\DataContainer\ContentElementViewListener;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
@@ -34,10 +35,10 @@ class ChildElementContainerPreviewListener extends ContentElementViewListener {
 		ContaoFramework $framework,
 		TranslatorInterface $translator
 	) {
-		parent::__construct($framework, $translator);
+		parent::__construct($framework, $translator, $twig);
 	}
 
-	public function generateLabel(array $row, string $label, DC_Table $dc): array|string {
+	public function generateLabel(array $row, string $label, DC_Table $dc): RecordLabel {
 		$label = $this->inner->generateLabel($row, $label, $dc);
 
 		if ($dc->parentTable !== 'tl_theme') {
@@ -46,7 +47,7 @@ class ChildElementContainerPreviewListener extends ContentElementViewListener {
 				return $label;
 			}
 
-			$label[1] = $this->twig->render('@Contao/backend/data_container/table/view/nested_grid_records.html.twig', [
+			$label->htmlPreview = $this->twig->render('@Contao/backend/data_container/table/view/nested_grid_records.html.twig', [
 				'records' => $this->generateRecords($childRecords, $dc),
 				'table' => $dc->table,
 				'is_sortable' => false,

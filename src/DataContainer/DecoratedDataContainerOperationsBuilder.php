@@ -8,6 +8,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\String\HtmlAttributes;
 use Contao\DataContainer;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment;
 
@@ -17,8 +18,9 @@ class DecoratedDataContainerOperationsBuilder extends DataContainerOperationsBui
 		private readonly Environment $twig,
 		private readonly Security $security,
 		private readonly UrlGeneratorInterface $urlGenerator,
+		RequestStack $requestStack,
 	) {
-		parent::__construct($framework, $twig, $security, $urlGenerator);
+		parent::__construct($framework, $requestStack, $twig, $security, $urlGenerator);
 	}
 
 	public function initializeWithButtons(string $table, array $record, DataContainer $dataContainer, ?callable $legacyCallback = null, bool $primaryOnly = false): DataContainerOperationsBuilder {

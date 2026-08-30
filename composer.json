@@ -18,12 +18,12 @@
 	],
     "require": {
         "php": "^8.3",
-        "contao/core-bundle": "^5.7.6",
-        "symfony/dependency-injection": "^7.4",
+        "contao/core-bundle": "^6.0",
+        "symfony/dependency-injection": "^7.4 || ^8.0",
         "symfony/deprecation-contracts": "^3.0",
-        "symfony/event-dispatcher": "^7.4",
-        "symfony/http-kernel": "^7.4",
-        "symfony/security-bundle": "^7.4",
+        "symfony/event-dispatcher": "^7.4 || ^8.0",
+        "symfony/http-kernel": "^7.4 || ^8.0",
+        "symfony/security-bundle": "^7.4 || ^8.0",
         "symfony/translation-contracts": "^3.0",
         "twig/twig": "^3.21"
     },
